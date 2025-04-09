@@ -6,7 +6,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.time.Month;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;
@@ -22,26 +26,41 @@ public class WebTest {
         $("[data-testid='btn.logIn']").shouldHave(text(language.description));
     }
 
+
     @Test
-    @DisplayName("Позитивный тест на поиск")
-    @Tag("WEB")
-    void successfulSearchTest() {
-        open("https://fon.bet/");
-        $("[data-testid='btn.search']").click();
-        $("[data-testid=stringEdit]").setValue("WTA");
-        $("[data-testid=sportCategoryText]").shouldHave(text("WTA"));
+    @ValueSource(strings = {
+            "Медведев",
+            "Рублев",
+            "Алькарас"
+    })
+    @ParameterizedTest
+
+        void successfulSearchTest(String testData) {
+            open("https://fon.bet/");
+            $("[data-testid='btn.search']").click();
+
+            $("[data-testid=stringEdit]").setValue(testData);
+            $("[data-testid=sportCategoryText]").shouldHave(text(testData));
+            sleep(5000);
     }
 
-    @Disabled("PB-1234")
-    @Test
+
     @DisplayName("Негативный тест на вход в систему")
     @Tag("WEB")
-    void unsuccessfulLogInWithPhoneNumber() {
+    @ParameterizedTest
+    @CsvSource({
+            "79123456789, invalidPassword, Логин или пароль указан неверно",
+            "emptyPhoneNumber, emptyPassword, Это поле обязательно для заполнения"
+    })
+    void unsuccessfulLogInWithPhoneNumber(String userPhoneNumber, String password, String result) {
         open("https://fon.bet/");
         $("[data-testid='btn.logIn']").click();
-        $("[name=login]").setValue("89631234567");
-        $("[type=password]").setValue("Qwerty123").pressEnter();
-        $(".text--kseTA").shouldHave(text("Логин или пароль указан неверно."));
+        $("[name=login]").setValue(userPhoneNumber);
+        $("[type=password]").setValue(password).pressEnter();
+        $(".text--kseTA").shouldHave(text(result));
     }
 
-}
+
+    }
+
+
