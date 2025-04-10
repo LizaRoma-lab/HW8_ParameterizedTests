@@ -44,7 +44,7 @@ public class WebTest {
     @ParameterizedTest
     @CsvSource({
             "79123456789, invalidPassword, Логин или пароль указан неверно",
-            "emptyPhoneNumber, emptyPassword, Это поле обязательно для заполнения"
+            "invalidEmail, randomPassword, Логин или пароль указан неверно"
     })
     void unsuccessfulLogInWithPhoneNumber(String userPhoneNumber, String password, String result) {
         open("https://fon.bet/");
