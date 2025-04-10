@@ -1,16 +1,12 @@
 package guru.qa;
 
 import guru.qa.data.Language;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.time.Month;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;
@@ -27,21 +23,19 @@ public class WebTest {
     }
 
 
-    @Test
     @ValueSource(strings = {
-            "Медведев",
-            "Рублев",
+            "Циципас",
+            "Филс",
             "Алькарас"
     })
     @ParameterizedTest
+    void successfulSearchTest(String testData) {
+        open("https://fon.bet/");
+        $("[data-testid='btn.search']").click();
 
-        void successfulSearchTest(String testData) {
-            open("https://fon.bet/");
-            $("[data-testid='btn.search']").click();
-
-            $("[data-testid=stringEdit]").setValue(testData);
-            $("[data-testid=sportCategoryText]").shouldHave(text(testData));
-            sleep(5000);
+        $("[data-testid=stringEdit]").setValue(testData);
+        $("[data-testid=teams]").shouldHave(text(testData));
+        sleep(5000);
     }
 
 
@@ -61,6 +55,6 @@ public class WebTest {
     }
 
 
-    }
+}
 
 
